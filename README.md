@@ -6,9 +6,9 @@
 
 > [!NOTE]
 > **Précision technique sur l'enregistrement vidéo :**
-> - 🎥 **Enregistrement d'écran + audio :** Lors de la capture d'écran sur smartphone, le système d'exploitation bloque l'accès concurrent au microphone.
-> - 📱 **Utilisation du Micro :** L'application ne pouvant pas accéder au micro en même temps que le screen recorder, la voix de l'utilisateur n'est pas enregistrée dans la vidéo.
-> - ⏹️ **Génération & Traitement :** Après la phase d'entrée, l'application génère, traduit et synthétise fidèlement l'audio comme démontré ci-dessous.
+> - 🎥 **Enregistrement d'écran + audio :** Lors de la capture d'écran sur smartphone, le système d'exploitation bloque l'accès matériel concurrent au microphone.
+> - 📱 **Absence de la voix source :** L'application ne pouvant pas capturer le micro pendant le screen recording, ma propre voix n'est pas audible dans la vidéo.
+> - ⚡ **Streaming & Temps Réel :** L'ensemble du traitement s'exécute en **streaming et en temps réel** : dès la fin de l'entrée, l'application génère, traduit et diffuse instantanément la synthèse vocale traduite comme démontré ci-dessous.
 
 <div align="center">
 
