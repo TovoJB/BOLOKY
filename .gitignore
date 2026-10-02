@@ -1,51 +1,111 @@
-# Modèles de Deep Learning et Checkpoints lourds
+# ========================================================
+# 📱 FLUTTER & APPLICATION MOBILE (mobile_app)
+# ========================================================
+**/android/.gradle/
+**/.gradle/
+**/android/.kotlin/
+**/.kotlin/
+**/build/
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.packages
+**/.pub-cache/
+**/.pub/
+**/local.properties
+**/*.iml
+**/.idea/
+**/*.apk
+**/*.aab
+**/*.ipa
+**/*.app
+**/linux/flutter/ephemeral/
+**/windows/flutter/ephemeral/
+**/macos/Flutter/ephemeral/
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/app.framework
+
+# ========================================================
+# 🧠 MODÈLES DE DEEP LEARNING & CHECKPOINTS VOLUMINEUX
+# ========================================================
 *.safetensors
 *.bin
 *.onnx
 *.pt
 *.pth
 *.ckpt
-checkpoints/
-*-checkpoints/
-models/
-mms_model/
-mms_tts_model/
-opus_mt_*/
-merina_to_*/
-merina-betsileo-*
+*.tflite
+*.h5
+*.pb
+*.model
+*.vocab
+*.vec
+*.spm
+**/models/
+**/checkpoints/
+**/*-checkpoints/
+**/runs/
+**/logs/
+**/mms_model/
+**/mms_tts_model/
+**/opus_mt_*/
+**/merina_to_*/
+**/merina-betsileo-*
+**/checkpoint-*
 
-# Datasets et fichiers de données lourds
-dataset/
-dataset_*/
+# ========================================================
+# 📊 DATASETS & BASES DE DONNÉES VOLUMINEUSES
+# ========================================================
+**/dataset/
+**/dataset_*/
 *.csv
 *.tsv
 *.parquet
 *.jsonl
+*.db
+*.sqlite
+*.sqlite3
 *.txt
+!README.md
+!AGENTS.md
+!CLAUDE.md
 !requirements.txt
 !scrapping/*.txt
 
-# Fichiers audio et médias temporaires
+# ========================================================
+# 🔊 FICHIERS AUDIO & MÉDIAS TEMPORAIRES
+# ========================================================
 *.wav
 *.mp3
 *.m4a
 *.ogg
 *.flac
-uploads/
-tts_output/
-transcriptions/
-subtitles/
+*.aac
+*.wma
+*.mp4
+*.avi
+*.mkv
+**/uploads/
+**/tts_output/
+**/transcriptions/
+**/subtitles/
+**/tts_samples/
 
-# Python & Environnements
-__pycache__/
+# ========================================================
+# 🐍 PYTHON & ENVIRONNEMENTS VIRTUELS
+# ========================================================
+**/__pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
-env/
-venv/
-.venv/
-build/
+**/env/
+**/venv/
+**/.venv/
 develop-eggs/
 dist/
 downloads/
@@ -61,28 +121,33 @@ wheels/
 .installed.cfg
 *.egg
 
-# Node.js & Web UI
-node_modules/
-.next/
-out/
+# ========================================================
+# 🌐 NODE.JS & WEB UI (web_ui)
+# ========================================================
+**/node_modules/
+**/.next/
+**/out/
+*.tsbuildinfo
 .env*.local
+.npm
+.turbo
 
-# Flutter & Mobile App
-.dart_tool/
-.flutter-plugins
-.flutter-plugins-dependencies
-.packages
-*.apk
-*.aab
-build/
-linux/flutter/ephemeral/
-windows/flutter/ephemeral/
-.gradle/
-local.properties
+# ========================================================
+# 🗜️ ARCHIVES & PACKS
+# ========================================================
+*.tar
+*.tar.gz
+*.zip
+*.7z
+*.rar
+*.pack
+*.idx
+**/uroman/
 
-# Logs & OS
+# ========================================================
+# 💻 LOGS, SYSTÈME & IDE
+# ========================================================
 *.log
 .DS_Store
 Thumbs.db
 .vscode/
-.idea/
