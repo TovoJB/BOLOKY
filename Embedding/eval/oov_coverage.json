@@ -1,0 +1,27 @@
+[
+  {
+    "word": "mihinanina",
+    "in_vocab": false,
+    "vector_norm": 4.204
+  },
+  {
+    "word": "fampianarana",
+    "in_vocab": true,
+    "vector_norm": 3.828
+  },
+  {
+    "word": "tsy mahavita",
+    "in_vocab": false,
+    "vector_norm": 2.358
+  },
+  {
+    "word": "mpampianatra",
+    "in_vocab": true,
+    "vector_norm": 3.986
+  },
+  {
+    "word": "masoandrotsika",
+    "in_vocab": false,
+    "vector_norm": 3.985
+  }
+]

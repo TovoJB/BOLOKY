@@ -1,0 +1,37 @@
+[
+  {
+    "w1": "vady",
+    "w2": "lehilahy",
+    "cosine": 0.4146
+  },
+  {
+    "w1": "rano",
+    "w2": "orana",
+    "cosine": 0.4435
+  },
+  {
+    "w1": "mianatra",
+    "w2": "mahay",
+    "cosine": 0.5258
+  },
+  {
+    "w1": "maty",
+    "w2": "velona",
+    "cosine": 0.5276
+  },
+  {
+    "w1": "tsara",
+    "w2": "ratsy",
+    "cosine": 0.5234
+  },
+  {
+    "w1": "loha",
+    "w2": "tongotra",
+    "cosine": 0.3417
+  },
+  {
+    "w1": "afo",
+    "w2": "rano",
+    "cosine": 0.3342
+  }
+]

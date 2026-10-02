@@ -1,0 +1,34 @@
+[
+  {
+    "a": "misotro",
+    "b": "mihinana",
+    "c": "manasotro",
+    "expected": "mananina",
+    "predicted": "nananina",
+    "correct": false
+  },
+  {
+    "a": "mianatra",
+    "b": "miasa",
+    "c": "fianaran",
+    "expected": "fiasana",
+    "predicted": "hiasana",
+    "correct": false
+  },
+  {
+    "a": "lehibe",
+    "b": "kely",
+    "c": "lava",
+    "expected": "fohy",
+    "predicted": "lava",
+    "correct": false
+  },
+  {
+    "a": "ray",
+    "b": "reny",
+    "c": "zanaky",
+    "expected": "zanaka",
+    "predicted": "zanakan",
+    "correct": false
+  }
+]
