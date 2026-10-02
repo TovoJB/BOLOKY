@@ -25,7 +25,7 @@
 3. [Création du Tokenizer Dédié & Morphologie Malgache](#-création-du-tokenizer-dédié--morphologie-malgache)
    - [Algorithme SentencePiece Unigram & Hyperparamètres](#1-algorithme-sentencepiece-unigram--hyperparamètres)
    - [Gestion Morphologique et Caractères Spéciaux](#2-gestion-morphologique-et-caractères-spéciaux)
-   - [Visualisation du Tokenizer & Token Cloud](#3-visualisation-du-tokenizer--token-cloud)
+   - [3. Lemmatisation & Analyseur Morphologique (Seq2Seq)](#3-lemmatisation--analyseur-morphologique-seq2seq)
 4. [Espace d'Embedding & Représentation Vectorielle](#-espace-dembedding--représentation-vectorielle)
    - [Entraînement FastText & Word2Vec](#1-entraînement-fasttext--word2vec)
    - [Visualisation PCA 2D des Projections Vectorielles](#2-visualisation-pca-2d-des-projections-vectorielles)
@@ -149,17 +149,19 @@ Le script `tokeniser/traine/train_tokenizer.py` implémente un entraînement **S
 ### 2. Gestion Morphologique et Caractères Spéciaux
 Le tokenizer décompose fidèlement les mots complexes en unités sous-lexicales linguistiquement pertinentes (ex: `fampianarana` $\rightarrow$ `_fampi`, `anarana`), facilitant le transfert d'apprentissage vers les dialectes où les racines sont conservées mais les affixes modifiés.
 
-### 3. Visualisation du Tokenizer & Token Cloud
+### 3. Lemmatisation & Analyseur Morphologique (Seq2Seq)
 
-<!-- EMPLACEMENT PHOTO VISUALISATION TOKENIZER / NUAGE DE TOKENS -->
+Le modèle encodeur-décodeur (Seq2Seq) est capable de segmenter des mots complexes tout en isolant la racine entre crochets.
+
 <div align="center">
-
-![Nuage de Tokens 3D](web_ui/public/logo.png)
-
-> 📸 **Emplacement Photo : Interface de Tokenisation & Nuage de Tokens 3D**  
-> *(Interface interactive disponible dans `web_ui/src/app/components/TokenCloud3D.tsx` et `tokeniser/ui/app.py`)*
-
+  <img src="photoAnalyse/morphen.png" alt="Analyseur Morphologique et Lemmatisation Seq2Seq Malagasy" width="85%"/>
 </div>
+
+#### Exemples de segmentation morphologique et lemmatisation :
+- `mandreraka` $\rightarrow$ `man - [reraka]` *(préfixe verbal `man-` + racine `reraka`)*
+- `misotro` $\rightarrow$ `mi - [sotro]` *(préfixe `mi-` + racine `sotro`)*
+- `navalona` $\rightarrow$ `[anavola] - na` *(racine `anavola` + suffixe passif `-na`)*
+- `vaventy` $\rightarrow$ `va - [venty]` *(morphème `va-` + racine `venty`)*
 
 ---
 
