@@ -30,8 +30,8 @@
    - [Entraînement FastText & Word2Vec](#1-entraînement-fasttext--word2vec)
    - [Visualisation PCA 2D des Projections Vectorielles](#2-visualisation-pca-2d-des-projections-vectorielles)
    - [Évaluation Sémantique et Analogies Linguistiques](#3-évaluation-sémantique-et-analogies-linguistiques)
-5. [Acquisition de Données & Génération Synthétique](#-acquisition-de-données--génération-synthétique)
-   - [Web Scraping Ciblé](#1-web-scraping-ciblé)
+5. [Acquisition de Données, Traitement & Alignement des Patterns](#-acquisition-de-données-traitement--alignement-des-patterns)
+   - [Traitement des Données & Éditeur Dédié (EditeurMalagasy)](#1-traitement-des-données--éditeur-dédié-editeurmalagasy)
    - [Génération par Alignement de Patterns Linguistiques & Révision Humaine](#2-génération-par-alignement-de-patterns-linguistiques--révision-humaine)
 6. [Modèles de Traduction & Méthodologie d'Entraînement](#-modèles-de-traduction--méthodologie-dentraînement)
    - [Architecture MarianMT & Tokenizer Personnalisé](#1-architecture-marianmt--tokenizer-personnalisé)
@@ -50,12 +50,13 @@
 
 ## 🧭 Vue d'Ensemble & Emplacement des Composants
 
-L'écosystème de recherche et de développement de **BOLOKY** s'articule autour des modules sources suivants sur la station de travail :
+L'écosystème de recherche et de développement de **BOLOKY** s'articule autour des modules et dépôts sources suivants :
 
-| Composant | Emplacement Source Local | Rôle & Fonctionnalité |
+| Composant | Emplacement / Dépôt | Rôle & Fonctionnalité |
 | :--- | :--- | :--- |
 | **Backend API** | `/home/tovo/Bureau/crappingSianaka/backend` | Serveur FastAPI orchestrant l'inférence NMT, STT, TTS et la chaîne DSP |
-| **Entraînement TTS & Alignement** | `/home/tovo/Bureau/scrap` | Pipelines de fine-tuning VITS/MMS, conversion discriminateur, scraping audio |
+| **Entraînement TTS & Alignement** | `/home/tovo/Bureau/scrap` (`trainTTS/`) | Pipelines de fine-tuning VITS/MMS, conversion discriminateur, audio dataset |
+| **Traitement des Données & Éditeur** | [🔗 **EditeurMalagasy**](https://github.com/TovoJB/EditeurMalagasy) | Outils de nettoyage, d'émulation/évaluation, d'alignement et d'édition de données |
 | **Création du Tokenizer** | `/home/tovo/Bureau/crappingSianaka/tokeniser` | Entraînement SentencePiece Unigram (32k vocab) et interface de tokenisation |
 | **Embeddings & Évaluation** | `/home/tovo/Bureau/crappingSianaka/Embedding` | Entraînement FastText / Word2Vec, évaluation intrinsèque et projection PCA 2D |
 | **Application Mobile** | `/home/tovo/Bureau/crappingSianaka/mobile_app` | Client Flutter Android (enregistrement, synthèse audio, DSP, 3 directions) |
@@ -205,15 +206,17 @@ Sur la phrase malgache illustrative : *"mino aho fa mbola ho tsarany ny hoaviko"
 
 ---
 
-## 📊 Acquisition de Données & Génération Synthétique
+## 📊 Acquisition de Données, Traitement & Alignement des Patterns
 
 Face au manque critique de données numériques pour les dialectes régionaux (*low-resource NLP*), deux piliers ont été déployés :
 
-### 1. Web Scraping Ciblé (`scrapping/` & `scrap/`)
-- `scraper_bible.py` & `scraper.py` : Extraction de corpus bibliques parallèles alignés verset par verset en Malagasy Officiel, Betsileo et Vezo (`ScriptureEarth`, `JW.org`).
-- `scraper_motmalgache.py` : Scraping lexicographique et dictionnairique (~116 Mo SQLite `motmalgache.db`).
-- `scraper_vaovao.py` : Extraction d'articles d'actualité en malgache pour l'entraînement non-supervisé.
-- `clean_corpus.py` : Normalisation orthographique, suppression des balises et harmonisation des accents.
+### 1. Traitement des Données & Éditeur Dédié ([EditeurMalagasy](https://github.com/TovoJB/EditeurMalagasy))
+> 🔗 **Dépôt GitHub du traitement de données :** [https://github.com/TovoJB/EditeurMalagasy](https://github.com/TovoJB/EditeurMalagasy)
+
+L'ensemble du pipeline de préparation des données, d'émulation/évaluation, d'alignement audio-texte et d'édition de corpus est centralisé dans le dépôt dédié **EditeurMalagasy** :
+- **Nettoyage et normalisation de corpus :** Suppression des balises, harmonisation des accents et filtrage de la qualité.
+- **Extraction lexicographique :** Traitement de dictionnaires malgaches et corpus bibliques parallèles.
+- **Alignement et segmentation audio-texte :** Découpage temporel des enregistrements audio dialectaux pour l'entraînement TTS.
 
 ### 2. Génération par Alignement de Patterns Linguistiques & Révision Humaine
 - **Moteur d'alignement de patterns :** Un algorithme d'alignement phonologique et syntaxique analyse les règles de transformation systématiques entre le Merina officiel et le dialecte Vezo (mutations consonantiques, pronoms spécifiques, marqueurs d'aspect).
@@ -264,7 +267,7 @@ Face au manque critique de données numériques pour les dialectes régionaux (*
 ## 🔊 Synthèse Vocale (TTS) & Reconnaissance Vocale (STT)
 
 ### 1. Vezo MMS-TTS Fine-Tuned & Traitement du Signal (DSP)
-- **Modèle :** VITS `facebook/mms-tts` fine-tuné sur le dialecte Vezo (`mms-tts-vezo-finetuned-v4` dans `/home/tovo/Bureau/scrap/models/`).
+- **Modèle :** VITS `facebook/mms-tts` fine-tuné sur le dialecte Vezo (`mms-tts-vezo-finetuned-v4` dans `/home/tovo/Bureau/scrap/models/` ou `trainTTS/`).
 - **Pipeline DSP Audio en temps réel :**
   - **Filtre Passe-Haut Butterworth (150 Hz) :** Élimine les bruits de souffle et ronflements subsoniques.
   - **Noise Gate Adaptative :** Silence absolu entre les énoncés parlés.
@@ -306,14 +309,13 @@ BOLOKY/
 ├── backend/                       # API FastAPI (main.py, filtres DSP, endpoints)
 ├── mobile_app/                    # Application mobile Flutter complète
 ├── training/                      # Scripts d'entraînement NMT MarianMT & runner GPU
+├── trainTTS/                      # Pipelines d'entraînement et fine-tuning TTS Vezo VITS
 ├── tokeniser/                     # Scripts d'entraînement SentencePiece & UI
 │   ├── traine/train_tokenizer.py  # Entraînement tokenizer 32k
 │   └── ui/app.py                  # Interface de test de tokenisation
 ├── Embedding/                     # Pipeline d'embedding FastText & Word2Vec
 │   ├── scripts/                   # Scripts de preprocessing, training et PCA 2D
 │   └── eval/                      # Évaluation des similarités sémantiques
-├── scrap_and_tts_training/        # Scripts de scraping et fine-tuning TTS Vezo VITS
-├── scrapping/                     # Scrapers de corpus bilingues et nettoyage
 ├── utils/                         # Modules de transcription MMS STT
 ├── photoAnalyse/                  # Graphiques d'analyse lexicostatistique & embeddings
 │   ├── dialect_map.png            # Carte des 60 points de collecte
@@ -324,6 +326,8 @@ BOLOKY/
 ├── .gitignore                     # Exclusion des modèles lourds et gros datasets
 └── README.md                      # Documentation scientifique et technique complète
 ```
+
+> 💡 *Note : Le traitement avancé des données, l'émulation et l'édition de corpus sont disponibles sur le dépôt complémentaire : [**https://github.com/TovoJB/EditeurMalagasy**](https://github.com/TovoJB/EditeurMalagasy).*
 
 ---
 
