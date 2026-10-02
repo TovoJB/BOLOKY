@@ -19,14 +19,10 @@
 
 
 
-)<br>|
 
-[![Démo 2 : I have one brother](
-[screen-20261002-114748-1790930857142.webm](https://github.com/user-attachments/assets/8f5fdd92-7bd9-4de6-a178-644bae1bc766)
+[screen-20261002-114748-1790930857142.webm](https://github.com/user-attachments/assets/c368a39d-7744-44ed-ad00-bd095cad409b)
 
-)<br> |
 
-*(Remplacez les liens ci-dessus par les URLs finales de vos vidéos YouTube / Google Drive / Loom)*
 
 </div>
 
