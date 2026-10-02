@@ -33,32 +33,33 @@
 5. [Acquisition de Données, Traitement & Alignement des Patterns](#-acquisition-de-données-traitement--alignement-des-patterns)
    - [Traitement des Données & Éditeur Dédié (EditeurMalagasy)](#1-traitement-des-données--éditeur-dédié-editeurmalagasy)
    - [Génération par Alignement de Patterns Linguistiques & Révision Humaine](#2-génération-par-alignement-de-patterns-linguistiques--révision-humaine)
-6. [Modèles de Traduction & Méthodologie d'Entraînement](#-modèles-de-traduction--méthodologie-dentraînement)
-   - [Architecture MarianMT & Tokenizer Personnalisé](#1-architecture-marianmt--tokenizer-personnalisé)
-   - [Intégration Meta NLLB-200](#2-intégration-meta-nllb-200)
-   - [Stratégie de Fine-Tuning & Hyperparamètres](#3-stratégie-de-fine-tuning--hyperparamètres)
+6. [Modèles de Traduction Automatique (NMT)](#-modèles-de-traduction-automatique-nmt)
+   - [Architecture Transformer Seq2Seq](#1-architecture-transformer-seq2seq)
+   - [Traduction Multilingue Hautes Ressources](#2-traduction-multilingue-hautes-ressources)
+   - [Méthodologie d'Entraînement & Optimisation](#3-méthodologie-dentraînement--optimisation)
 7. [Synthèse Vocale (TTS) & Reconnaissance Vocale (STT)](#-synthèse-vocale-tts--reconnaissance-vocale-stt)
-   - [Vezo MMS-TTS Fine-Tuned & Traitement du Signal (DSP)](#1-vezo-mms-tts-fine-tuned--traitement-du-signal-dsp)
-   - [Malagasy Officiel TTS (Meta MMS-1B)](#2-malagasy-officiel-tts-meta-mms-1b)
-   - [English TTS (Kokoro ONNX)](#3-english-tts-kokoro-onnx)
-   - [Reconnaissance Vocale Multilingue (MMS STT & Whisper)](#4-reconnaissance-vocale-multilingue-mms-stt--whisper)
+   - [Synthèse Vocale Dialectale (Modèle VITS)](#1-synthèse-vocale-dialectale-modèle-vits)
+   - [Post-traitement Audio Numérique (DSP)](#2-post-traitement-audio-numérique-dsp)
+   - [Synthèse Vocale Multilingue](#3-synthèse-vocale-multilingue)
+   - [Reconnaissance Vocale (STT)](#4-reconnaissance-vocale-stt)
 8. [Architecture Logicielle & Déploiement](#-architecture-logicielle--déploiement)
 9. [Structure du Dépôt](#-structure-du-dépôt)
 10. [Guide de Démarrage](#-guide-de-démarrage)
+11. [Conclusion](#-conclusion)
 
 ---
 
 ## 🧭 Vue d'Ensemble & Emplacement des Composants
 
-L'écosystème de recherche et de développement de **BOLOKY** s'articule autour des modules et dépôts sources suivants :
+L'écosystème **BOLOKY** s'articule autour des modules et dépôts sources suivants :
 
 | Composant | Emplacement / Dépôt | Rôle & Fonctionnalité |
 | :--- | :--- | :--- |
 | **Backend API** | `/home/tovo/Bureau/crappingSianaka/backend` | Serveur FastAPI orchestrant l'inférence NMT, STT, TTS et la chaîne DSP |
-| **Entraînement TTS & Alignement** | `/home/tovo/Bureau/scrap` (`trainTTS/`) | Pipelines de fine-tuning VITS/MMS, conversion discriminateur, audio dataset |
-| **Traitement des Données & Éditeur** | [🔗 **EditeurMalagasy**](https://github.com/TovoJB/EditeurMalagasy) | Outils de nettoyage, d'émulation/évaluation, d'alignement et d'édition de données |
+| **Entraînement TTS & Alignement** | `/home/tovo/Bureau/scrap` (`trainTTS/`) | Entraînement de modèles VITS, découpage et alignement audio-texte |
+| **Traitement des Données & Éditeur** | [🔗 **EditeurMalagasy**](https://github.com/TovoJB/EditeurMalagasy) | Outils de nettoyage, d'évaluation, d'alignement et d'édition de données |
 | **Création du Tokenizer** | `/home/tovo/Bureau/crappingSianaka/tokeniser` | Entraînement SentencePiece Unigram (32k vocab) et interface de tokenisation |
-| **Embeddings & Évaluation** | `/home/tovo/Bureau/crappingSianaka/Embedding` | Entraînement FastText / Word2Vec, évaluation intrinsèque et projection PCA 2D |
+| **Embeddings & Évaluation** | `/home/tovo/Bureau/crappingSianaka/Embedding` | Entraînement de plongements vectoriels, évaluation et projection PCA 2D |
 | **Application Mobile** | `/home/tovo/Bureau/crappingSianaka/mobile_app` | Client Flutter Android (enregistrement, synthèse audio, DSP, 3 directions) |
 | **Interface Web Démo** | `/home/tovo/Bureau/crappingSianaka/translation-ui` | Frontend Next.js / TailwindCSS avec visualisation 3D des tokens |
 
@@ -71,10 +72,10 @@ L'écosystème de recherche et de développement de **BOLOKY** s'articule autour
        ┌───────────────────────┐
        │  FastAPI Backend :8000│
        ├───────────────────────┤
-       │ • STT : MMS / Whisper │
-       │ • NMT : NLLB / Marian │
-       │ • TTS : MMS / Kokoro  │
-       │ • DSP : Noise / Warmth│
+       │ • STT : Reconnaissance│
+       │ • NMT : Traducteur NMT│
+       │ • TTS : Synthèse VITS │
+       │ • DSP : Audio Filters │
        └───────────────────────┘
 ```
 
@@ -107,7 +108,7 @@ Avant d'aborder la modélisation neuronale, une **étude lexicostatistique compu
 #### Analyse & Interprétation :
 - **Métrique computationnelle :** Distance de Levenshtein normalisée moyenne calculée sur des listes diagnostiques de Swadesh.
 - **Résultats statistiques :**
-  - Coefficient de corrélation linéaire robuste : **$r = 0.64$** ($p < 0.001$).
+  - Coefficient de corrélation linéaire : **$r = 0.64$** ($p < 0.001$).
   - La divergence lexicale augmente régulièrement avec la distance kilométrique (de $0.26$ à courte distance jusqu'à $>0.50$ au-delà de 1 400 km).
 - **Séparation des branches :**
   - **Points fuchsia (*Même branche*) :** Distance lexicostatistique faible ($0.10$ à $0.25$) même à des distances intermédiaires (100 à 400 km).
@@ -122,7 +123,7 @@ Avant d'aborder la modélisation neuronale, une **étude lexicostatistique compu
 </div>
 
 #### Analyse & Interprétation :
-- **Indicateur de centralité :** Distance moyenne de chaque dialecte par rapport à tous les autres (plus la note est basse, plus le dialecte est central et mutuellement intelligible).
+- **Indicateur de centralité :** Distance moyenne de chaque dialecte par rapport à tous les autres (plus la valeur est basse, plus le dialecte est central et mutuellement intelligible).
 - **Constats clés :**
   1. **Antananarivo (Merina) — $\mathbf{0.3037}$ :** Position la plus centrale de l'île, validant le choix du Malagasy Officiel comme langue pivot de traduction (*pivot language*).
   2. **Ambohimahasoa / Fianarantsoa / Ambositra (Betsileo) — $\mathbf{0.3149 - 0.3162}$ :** Forte proximité structurelle avec le Merina.
@@ -144,19 +145,6 @@ Le script `tokeniser/traine/train_tokenizer.py` implémente un entraînement **S
   - `<unk>` (ID: 1) : Token inconnu de secours.
   - `<s>` (BOS) : Début de séquence.
   - `</s>` (EOS, ID: 2) : Fin de séquence.
-
-```python
-# Extrait du script train_tokenizer.py
-spm.SentencePieceTrainer.train(
-    input="./data/all_dataFinal.txt",
-    model_prefix="boloky_tokenizer",
-    vocab_size=32000,
-    character_coverage=1.0,
-    model_type="unigram",
-    pad_id=0, unk_id=1, bos_id=-1, eos_id=2,
-    pad_piece="<pad>", unk_piece="<unk>", bos_piece="<s>", eos_piece="</s>"
-)
-```
 
 ### 2. Gestion Morphologique et Caractères Spéciaux
 Le tokenizer décompose fidèlement les mots complexes en unités sous-lexicales linguistiquement pertinentes (ex: `fampianarana` $\rightarrow$ `_fampi`, `anarana`), facilitant le transfert d'apprentissage vers les dialectes où les racines sont conservées mais les affixes modifiés.
@@ -208,14 +196,14 @@ Sur la phrase malgache illustrative : *"mino aho fa mbola ho tsarany ny hoaviko"
 
 ## 📊 Acquisition de Données, Traitement & Alignement des Patterns
 
-Face au manque critique de données numériques pour les dialectes régionaux (*low-resource NLP*), deux piliers ont été déployés :
+Face au manque critique de données numériques pour les dialectes régionaux (*low-resource NLP*), deux approches ont été combinées :
 
 ### 1. Traitement des Données & Éditeur Dédié ([EditeurMalagasy](https://github.com/TovoJB/EditeurMalagasy))
 > 🔗 **Dépôt GitHub du traitement de données :** [https://github.com/TovoJB/EditeurMalagasy](https://github.com/TovoJB/EditeurMalagasy)
 
-L'ensemble du pipeline de préparation des données, d'émulation/évaluation, d'alignement audio-texte et d'édition de corpus est centralisé dans le dépôt dédié **EditeurMalagasy** :
+L'ensemble du pipeline de préparation des données, d'évaluation, d'alignement audio-texte et d'édition de corpus est centralisé dans le dépôt dédié **EditeurMalagasy** :
 - **Nettoyage et normalisation de corpus :** Suppression des balises, harmonisation des accents et filtrage de la qualité.
-- **Extraction lexicographique :** Traitement de dictionnaires malgaches et corpus bibliques parallèles.
+- **Extraction lexicographique :** Traitement de dictionnaires malgaches et corpus textuels parallèles.
 - **Alignement et segmentation audio-texte :** Découpage temporel des enregistrements audio dialectaux pour l'entraînement TTS.
 
 ### 2. Génération par Alignement de Patterns Linguistiques & Révision Humaine
@@ -225,7 +213,7 @@ L'ensemble du pipeline de préparation des données, d'émulation/évaluation, d
 
 ---
 
-## 🧠 Modèles de Traduction & Méthodologie d'Entraînement
+## 🧠 Modèles de Traduction Automatique (NMT)
 
 ```
                   ┌───────────────────────────────┐
@@ -236,53 +224,53 @@ L'ensemble du pipeline de préparation des données, d'émulation/évaluation, d
                          │                 │
                          ▼                 ▼
              ┌──────────────────┐  ┌──────────────────┐
-             │ Meta NLLB-200    │  │ Helsinki MarianMT│
-             │ (Distilled 600M) │  │ (opus_mt_en_mg)  │
+             │ Modèle NMT       │  │ Modèle Seq2Seq   │
+             │ Multilingue      │  │ Bilingue         │
              └─────────┬────────┘  └────────┬─────────┘
                        │                    │
                        └──────────┬─────────┘
                                   ▼
                      ┌──────────────────────────┐
-                     │ Modèle MarianMT Fine-Tuné│
-                     │ (Merina ➔ Vezo / Betsileo│
+                     │ Modèle de Transfert      │
+                     │ Dialectal (Merina ➔ Vezo)│
                      └──────────────────────────┘
 ```
 
-### 1. Architecture MarianMT & Tokenizer Personnalisé
-- **Base :** `Helsinki-NLP/opus-mt` adapté au transfert de dialectes.
-- **Fine-Tuning :** Entraîné sur les paires Merina $\rightarrow$ Vezo et Merina $\rightarrow$ Betsileo.
+### 1. Architecture Transformer Seq2Seq
+- **Type de modèle :** Réseaux de neurones Encodeur-Décodeur (Seq2Seq Transformer).
+- **Rôle :** Modélisation du transfert morphosyntaxique entre le Malagasy Officiel (Merina) et les dialectes régionaux (Vezo, Betsileo).
 
-### 2. Intégration Meta NLLB-200
-- **Modèle :** `facebook/nllb-200-distilled-600M`.
-- **Rôle :** Traduction haute précision **Malagasy Officiel $\rightarrow$ Anglais** (`plt_Latn` / `mlg` vers `eng_Latn`), surpassant largement les traducteurs traditionnels grâce à son espace latent multilingue.
+### 2. Traduction Multilingue Hautes Ressources
+- **Type de modèle :** Modèle multilingue Transformer à large échelle.
+- **Rôle :** Traduction bidirectionnelle de haute fidélité entre le **Malagasy Officiel** et les langues internationales (**Anglais**, **Français**).
 
-### 3. Stratégie de Fine-Tuning (`training/train_merina_to_vezo.py`)
+### 3. Méthodologie d'Entraînement & Optimisation
 - **Précision :** FP16 (Mixed Precision).
-- **Optimisation VRAM :** Gradient Checkpointing activé.
-- **Batching :** Batch size de 4 avec `gradient_accumulation_steps = 4` (taille effective de 16).
-- **Taux d'apprentissage :** $5 \times 10^{-5}$ avec `weight_decay = 0.01` et early stopping sur `eval_loss`.
+- **Gestion mémoire :** Gradient Checkpointing.
+- **Optimiseur :** AdamW avec décroissance du taux d'apprentissage et sélection du meilleur point de contrôle sur la perte de validation (`eval_loss`).
 
 ---
 
 ## 🔊 Synthèse Vocale (TTS) & Reconnaissance Vocale (STT)
 
-### 1. Vezo MMS-TTS Fine-Tuned & Traitement du Signal (DSP)
-- **Modèle :** VITS `facebook/mms-tts` fine-tuné sur le dialecte Vezo (`mms-tts-vezo-finetuned-v4` dans `/home/tovo/Bureau/scrap/models/` ou `trainTTS/`).
-- **Pipeline DSP Audio en temps réel :**
-  - **Filtre Passe-Haut Butterworth (150 Hz) :** Élimine les bruits de souffle et ronflements subsoniques.
-  - **Noise Gate Adaptative :** Silence absolu entre les énoncés parlés.
-  - **Égalisation Harmonique (Vocal Warmth) :** Présence vocale naturelle renforcée sur la bande 200 Hz – 3 kHz.
-  - **Normalisation Peak/RMS :** Volume uniforme ($1.15\times$, 22.05 kHz).
+### 1. Synthèse Vocale Dialectale (Modèle VITS)
+- **Architecture :** **VITS** (*Variational Inference with adversarial learning for end-to-end Text-to-Speech*).
+- **Fonctionnement :** Modèle génératif de bout en bout associant un auto-encodeur variationnel (VAE) et un discriminateur adversaire (GAN) pour synthétiser des formes d'onde audio naturelles et expressives directement à partir du texte en dialecte Vezo.
 
-### 2. Malagasy Officiel TTS (Meta MMS-1B)
-- **Modèle :** `facebook/mms-1b-all` avec `target_lang="mlg"`.
+### 2. Post-traitement Audio Numérique (DSP)
+Pour garantir une restitution acoustique claire et agréable :
+- **Filtre Passe-Haut (150 Hz) :** Élimination des bruits subsoniques et des bruits de souffle.
+- **Porte de Bruit (*Noise Gate*) :** Suppression des bruits résiduels entre les segments de parole.
+- **Égalisation Harmonique (*Vocal Warmth*) :** Renforcement de la présence et de la chaleur vocale.
+- **Normalisation Peak/RMS :** Harmonisation automatique du volume d'écoute.
 
-### 3. English TTS (Kokoro ONNX)
-- **Modèle :** `Kokoro-82M` ONNX haute fidélité (`af_sarah`), latence $<100$ ms.
+### 3. Synthèse Vocale Multilingue
+- **Voix Malgache Officielle :** Synthèse vocale neuronale fluide pour le malgache standard.
+- **Voix Anglaise :** Synthèse neuronale légère et optimisée pour une faible latence d'inférence.
 
-### 4. Reconnaissance Vocale Multilingue (MMS STT & Whisper)
-- **Malagasy & Dialectes :** `facebook/mms-1b-all` (Wav2Vec2ForCTC) avec chunking de 30s (`utils/mms_transcribeCPU.py`).
-- **Anglais & Français :** OpenAI Whisper.
+### 4. Reconnaissance Vocale (STT)
+- **Reconnaissance Malgache & Dialectes :** Modèle acoustique neuronal avec traitement de flux audio par fenêtrage temporel.
+- **Reconnaissance Anglaise & Française :** Modèle ASR robuste adapté aux accents et aux bruits ambiants.
 
 ---
 
@@ -293,7 +281,7 @@ FastAPI asynchrone exposant :
 - `POST /translate` : Traduction multi-directionnelle texte.
 - `POST /speech-to-vezo` : Pipeline vocal unifié (STT $\rightarrow$ NMT $\rightarrow$ TTS).
 - `POST /tts-vezo` : Synthèse vocale Vezo avec filtrage DSP.
-- `POST /tts-english` : Synthèse vocale anglaise Kokoro.
+- `POST /tts-english` : Synthèse vocale anglaise.
 - `POST /transcribe` : Transcription audio brute.
 
 ### Application Mobile (`/home/tovo/Bureau/crappingSianaka/mobile_app`)
@@ -308,15 +296,15 @@ FastAPI asynchrone exposant :
 BOLOKY/
 ├── backend/                       # API FastAPI (main.py, filtres DSP, endpoints)
 ├── mobile_app/                    # Application mobile Flutter complète
-├── training/                      # Scripts d'entraînement NMT MarianMT & runner GPU
-├── trainTTS/                      # Pipelines d'entraînement et fine-tuning TTS Vezo VITS
+├── training/                      # Scripts d'entraînement NMT & runner GPU
+├── trainTTS/                      # Pipelines d'entraînement et synthèse TTS VITS
 ├── tokeniser/                     # Scripts d'entraînement SentencePiece & UI
 │   ├── traine/train_tokenizer.py  # Entraînement tokenizer 32k
 │   └── ui/app.py                  # Interface de test de tokenisation
 ├── Embedding/                     # Pipeline d'embedding FastText & Word2Vec
 │   ├── scripts/                   # Scripts de preprocessing, training et PCA 2D
 │   └── eval/                      # Évaluation des similarités sémantiques
-├── utils/                         # Modules de transcription MMS STT
+├── utils/                         # Modules de transcription vocale STT
 ├── photoAnalyse/                  # Graphiques d'analyse lexicostatistique & embeddings
 │   ├── dialect_map.png            # Carte des 60 points de collecte
 │   ├── lexicostat_vs_geographic.png # Régression distance lexicale vs km (r=0.64)
@@ -324,7 +312,7 @@ BOLOKY/
 │   └── sentence_vectors.png       # Projection PCA 2D des mots malgaches
 ├── web_ui/                        # Interface web de démonstration Next.js
 ├── .gitignore                     # Exclusion des modèles lourds et gros datasets
-└── README.md                      # Documentation scientifique et technique complète
+└── README.md                      # Documentation scientifique et technique
 ```
 
 > 💡 *Note : Le traitement avancé des données, l'émulation et l'édition de corpus sont disponibles sur le dépôt complémentaire : [**https://github.com/TovoJB/EditeurMalagasy**](https://github.com/TovoJB/EditeurMalagasy).*
@@ -357,6 +345,16 @@ python3 train_tokenizer.py
 cd training
 bash run_train_vezo.sh
 ```
+
+---
+
+## 📌 Conclusion
+
+Le projet **BOLOKY** propose une approche scientifique et technologique intégrée pour la valorisation des dialectes malgaches :
+- **Validation linguistique :** Une étude lexicostatistique sur 60 points de collecte confirmant la distance entre les Hauts-Plateaux et les dialectes côtiers.
+- **Pipeline de données hybride :** Combinaison de scraping, d'alignement algorithmique de patterns et d'une validation humaine par des locuteurs natifs.
+- **Modélisation neuronale moderne :** Modèles Seq2Seq pour la traduction et architecture générative **VITS** couplée à un traitement DSP pour la synthèse vocale dialectale.
+- **Accessibilité multiplateforme :** Une application mobile interactive et une API robuste facilitant la communication inter-dialectale et internationale.
 
 ---
 
