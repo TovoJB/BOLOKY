@@ -2,15 +2,21 @@
 
 ---
 
-## 🎥 Démonstration Vidéo
+## 🎥 Démonstrations Vidéo
 
-<!-- EMPLACEMENT VIDÉO DE DÉMONSTRATION -->
+> [!NOTE]
+> **Précision technique sur l'enregistrement vidéo :**
+> - 🎥 **Enregistrement d'écran + audio :** Lors de la capture d'écran sur smartphone, le système d'exploitation bloque l'accès concurrent au microphone.
+> - 📱 **Utilisation du Micro :** L'application ne pouvant pas accéder au micro en même temps que le screen recorder, la voix de l'utilisateur n'est pas enregistrée dans la vidéo.
+> - ⏹️ **Génération & Traitement :** Après la phase d'entrée, l'application génère, traduit et synthétise fidèlement l'audio comme démontré ci-dessous.
+
 <div align="center">
 
-[![Démonstration Vidéo du Projet BOLOKY](https://img.youtube.com/vi/VOTRE_ID_VIDEO/maxresdefault.jpg)](https://www.youtube.com/watch?v=VOTRE_ID_VIDEO)
+| 🎬 Démo 1 : *"Are you fine"* | 🎬 Démo 2 : *"I have one brother"* |
+| :---: | :---: |
+| [![Démo 1 : Are you fine](https://img.youtube.com/vi/ID_VIDEO_1/mqdefault.jpg)](https://www.youtube.com/watch?v=ID_VIDEO_1)<br><sub>📹 **[Lien Démo 1 : "Are you fine"](https://www.youtube.com/watch?v=ID_VIDEO_1)**</sub> | [![Démo 2 : I have one brother](https://img.youtube.com/vi/ID_VIDEO_2/mqdefault.jpg)](https://www.youtube.com/watch?v=ID_VIDEO_2)<br><sub>📹 **[Lien Démo 2 : "I have one brother"](https://www.youtube.com/watch?v=ID_VIDEO_2)**</sub> |
 
-> 📹 **Lien de la vidéo démo :** `[Insérer ici le lien YouTube / Google Drive / Loom de la démo vidéo]`  
-> *(Remplacez l'URL ci-dessus par le lien final de votre démonstration)*
+*(Remplacez les liens ci-dessus par les URLs finales de vos vidéos YouTube / Google Drive / Loom)*
 
 </div>
 
